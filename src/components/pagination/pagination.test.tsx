@@ -5,7 +5,7 @@ import Pagination from './pagination';
 
 describe('component: Pagination', () => {
 
-  it('Should render page 1 with total number guitars 15 correctly', () => {
+  it('Should render page 1 with total number guitars 9 correctly', () => {
 
     const history = createMemoryHistory();
     const route = '/catalog/page_1';
@@ -15,7 +15,7 @@ describe('component: Pagination', () => {
       <Router location={history.location} navigator={history}>
         <Routes>
           <Route path='/catalog/page_:pageNamber'
-            element={<Pagination totalGuitarsCount={15}/>}
+            element={<Pagination totalGuitarsCount={9}/>}
           />
         </Routes>
       </Router>,

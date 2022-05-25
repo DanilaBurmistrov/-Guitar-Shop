@@ -6,12 +6,13 @@ import { Route, Router, Routes} from 'react-router-dom';
 import CatalogScreen from './catalog-screen';
 import * as Redux from 'react-redux';
 import { makeFakeGuitar } from '../utils/test-mocks';
+import { getDefaultMiddleware } from '@reduxjs/toolkit';
 
 describe('component: CatalogScreen', () => {
 
   it('Should render page 1 correctly', () => {
 
-    const mockStore = configureMockStore();
+    const mockStore = configureMockStore([...getDefaultMiddleware()]);
 
     const history = createMemoryHistory();
 

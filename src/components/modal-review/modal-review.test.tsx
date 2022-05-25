@@ -1,4 +1,5 @@
 import { configureMockStore } from '@jedmao/redux-mock-store';
+import { getDefaultMiddleware } from '@reduxjs/toolkit';
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
@@ -15,7 +16,7 @@ describe('component: ModalReview', () => {
 
     const history = createMemoryHistory();
 
-    const mockStore = configureMockStore();
+    const mockStore = configureMockStore([...getDefaultMiddleware()]);
 
     const store = mockStore({
       DATA: {
