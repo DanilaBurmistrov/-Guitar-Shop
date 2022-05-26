@@ -1,3 +1,4 @@
+import { RATING } from '../../const';
 import { Comment } from '../../types/types';
 import StarRating from '../star-rating/star-rating';
 
@@ -14,7 +15,7 @@ export default function ProductReview({review}: ProductReviewProps): JSX.Element
       </div>
       <div className="rate review__rating-panel">
         <StarRating ratingNumber={review.rating}/>
-        <p className="visually-hidden">Оценка: {review.rating}</p>
+        <p className="visually-hidden">Оценка: {RATING[review.rating]}</p>
       </div>
       <h4 className="review__title title title--lesser">Достоинства:</h4>
       <p className="review__value">{review.advantage}</p>
