@@ -9,3 +9,8 @@ export function sortReviewsByDate(reviews: Comments) {
     return  dateB - dateA;
   });
 }
+
+export function getGuitarImgForSrcSet(guitarImg: string) {
+  const imgForSrcSet = guitarImg.split('.')[0];
+  return imgForSrcSet;
+}
