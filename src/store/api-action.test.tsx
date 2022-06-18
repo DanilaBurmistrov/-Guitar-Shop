@@ -40,7 +40,7 @@ describe('Async actions', () => {
 
     expect(mockStore.getActions()).toEqual([]);
 
-    await mockStore.dispatch(fetchGuitars('1'));
+    await mockStore.dispatch(fetchGuitars(['1', 2, 2, '', '', '']));
 
     const actions = mockStore.getActions().map((action) => ({
       type: action.type,

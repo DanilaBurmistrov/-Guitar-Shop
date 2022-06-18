@@ -1,3 +1,5 @@
+import { GuitarStringCountType } from './types/types';
+
 export const TIMEOUT_SHOW_ERROR = 4000;
 
 export const GUITAR_PER_PAGE = 9;
@@ -20,6 +22,12 @@ export const RATING = {
   3: 'Удовлетворительно',
   4: 'Хорошо',
   5: 'Отлично',
+};
+
+export const GUITAR_STRING_COUNT: GuitarStringCountType = {
+  acoustic: [6, 7, 12],
+  electric: [4, 6, 7],
+  ukulele: [4],
 };
 
 export enum AppRoute {

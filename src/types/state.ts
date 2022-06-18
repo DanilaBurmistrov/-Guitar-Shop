@@ -7,10 +7,12 @@ export type GuitarsProcess = {
   oneGuitarCard: Guitar | null
   isOneGuitarCardDataLoaded: boolean
   error: string
+  searchResult: Guitars
+  sortedGuitars: Guitars
 };
 
 export type SiteProcess = {
-  totalGuitarsCount: number
+  totalGuitarsCount: number,
 };
 
 export type State = ReturnType<typeof store.getState>;

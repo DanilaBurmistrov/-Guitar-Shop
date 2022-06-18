@@ -4,20 +4,22 @@ import { APIRoute, TIMEOUT_SHOW_ERROR } from '../const';
 import { handleError } from '../services/handle-error';
 import { NewComment } from '../types/types';
 import { redirectToRoute } from './action';
-import { loadGuitars, loadOneGuitarCard, loadPostedComment, setError } from './guitars-process-data/guitars-process-data';
+import { loadGuitars, loadOneGuitarCard, loadPostedComment, setError, loadSortedGuitars } from './guitars-process-data/guitars-process-data';
 import { loadTotalGuitarsCount } from './site-process-data/site-process-data';
 
 export const fetchGuitars = createAsyncThunk(
   'fetchGuitars',
-  async (pageId: string | undefined) => {
+  async ([pageId, start, end, filterParams, sortParams, priceParams]: [string | undefined, number, number, string, string, string]) => {
     let startCount = 0;
     if(pageId) {
       startCount = Number(pageId) * 9 - 9;
     }
     try {
-      const result = await api.get(`/guitars?_embed=comments&_start=${startCount}&_limit=27`);
+      const result = await api.get(`/guitars?_start=${start}&_end=${end}${filterParams}${sortParams}${priceParams}&_embed=comments&_start=${startCount}&_limit=27`);
+      const sortedGuitars = await api.get(`${APIRoute.Guitars}?_sort=price${filterParams}`);
       store.dispatch(setError(''));
       store.dispatch(loadGuitars(result.data));
+      store.dispatch(loadSortedGuitars(sortedGuitars.data));
       const resultHeaders = result.headers;
       store.dispatch(loadTotalGuitarsCount(resultHeaders['x-total-count']));
     } catch (error) {

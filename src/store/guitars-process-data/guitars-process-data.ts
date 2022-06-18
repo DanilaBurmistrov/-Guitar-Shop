@@ -9,12 +9,20 @@ const initialState: GuitarsProcess = {
   oneGuitarCard: null,
   isOneGuitarCardDataLoaded: false,
   error: '',
+  searchResult: [],
+  sortedGuitars: [],
 };
 
 export const guitarsProcessData = createSlice({
   name: NameSpace.Data,
   initialState,
   reducers: {
+    loadSearchResult: (state, action: PayloadAction<Guitars>) => {
+      state.searchResult = action.payload;
+    },
+    loadSortedGuitars: (state, action: PayloadAction<Guitars>) => {
+      state.sortedGuitars = action.payload;
+    },
     loadGuitars: (state, action: PayloadAction<Guitars>) => {
       state.guitars = action.payload;
       state.isGuitarsDataLoaded = true;
@@ -34,4 +42,4 @@ export const guitarsProcessData = createSlice({
   }
 });
 
-export const {loadGuitars, loadOneGuitarCard, setError, loadPostedComment} = guitarsProcessData.actions;
+export const {loadGuitars, loadOneGuitarCard, setError, loadPostedComment, loadSearchResult, loadSortedGuitars} = guitarsProcessData.actions;

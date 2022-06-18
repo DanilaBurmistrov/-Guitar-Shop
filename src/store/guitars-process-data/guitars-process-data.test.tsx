@@ -22,6 +22,8 @@ describe('Reducer: Data', () => {
         oneGuitarCard: null,
         isOneGuitarCardDataLoaded: false,
         error: '',
+        searchResult: [],
+        sortedGuitars: [],
       });
   });
   it('should update guitars by load guitars', () => {
@@ -31,6 +33,8 @@ describe('Reducer: Data', () => {
       oneGuitarCard: null,
       isOneGuitarCardDataLoaded: false,
       error: '',
+      searchResult: [],
+      sortedGuitars: [],
     };
     expect(guitarsProcessData.reducer(state, loadGuitars(guitars)))
       .toEqual({
@@ -39,6 +43,8 @@ describe('Reducer: Data', () => {
         oneGuitarCard: null,
         isOneGuitarCardDataLoaded: false,
         error: '',
+        searchResult: [],
+        sortedGuitars: [],
       });
   });
   it('should update guitar by load guitar', () => {
@@ -47,6 +53,8 @@ describe('Reducer: Data', () => {
       oneGuitarCard: null,
       isOneGuitarCardDataLoaded: false,
       error: '',
+      searchResult: [],
+      sortedGuitars: [],
     };
     expect(guitarsProcessData.reducer(state, loadOneGuitarCard(guitar)))
       .toEqual({guitars: [],
@@ -54,6 +62,8 @@ describe('Reducer: Data', () => {
         oneGuitarCard: guitar,
         isOneGuitarCardDataLoaded: true,
         error: '',
+        searchResult: [],
+        sortedGuitars: [],
       });
   });
   it('should update oneGuitarCard comments by load comment', () => {
@@ -62,6 +72,8 @@ describe('Reducer: Data', () => {
       oneGuitarCard: guitar,
       isOneGuitarCardDataLoaded: true,
       error: '',
+      searchResult: [],
+      sortedGuitars: [],
     };
     expect(guitarsProcessData.reducer(state, loadPostedComment(commentPost)))
       .toEqual({guitars: [],
@@ -69,6 +81,8 @@ describe('Reducer: Data', () => {
         oneGuitarCard: guitarWithCommentPost,
         isOneGuitarCardDataLoaded: true,
         error: '',
+        searchResult: [],
+        sortedGuitars: [],
       });
   });
   it('should update error by load response status', () => {
@@ -78,6 +92,8 @@ describe('Reducer: Data', () => {
       oneGuitarCard: null,
       isOneGuitarCardDataLoaded: false,
       error: '',
+      searchResult: [],
+      sortedGuitars: [],
     };
     expect(guitarsProcessData.reducer(state, setError(fakeErrorStatus)))
       .toEqual({
@@ -86,6 +102,8 @@ describe('Reducer: Data', () => {
         oneGuitarCard: null,
         isOneGuitarCardDataLoaded: false,
         error: '404',
+        searchResult: [],
+        sortedGuitars: [],
       });
   });
 });
