@@ -1,8 +1,6 @@
 import { NameSpace } from '../const';
 import { State } from '../types/state';
-import { Guitar, Guitars } from '../types/types';
-
-export const getGuitars = (state: State): Guitars => state[NameSpace.Data].guitars;
+import { Guitar } from '../types/types';
 
 export const getGuitarsDataLoadedStatus = (state: State): boolean => state[NameSpace.Data].isGuitarsDataLoaded;
 
