@@ -41,5 +41,4 @@ export default function Pagination({totalGuitarsCount}: PaginationProps): JSX.El
       </ul>
     </div>
   );
-
 }

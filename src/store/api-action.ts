@@ -4,7 +4,7 @@ import { APIRoute, TIMEOUT_SHOW_ERROR } from '../const';
 import { handleError } from '../services/handle-error';
 import { NewComment } from '../types/types';
 import { redirectToRoute } from './action';
-import { loadGuitars, loadOneGuitarCard, loadPostedComment, setError, loadSortedGuitars } from './guitars-process-data/guitars-process-data';
+import { loadGuitars, loadOneGuitarCard, loadPostedComment, setError, loadSortedGuitars, loadSearchResult } from './guitars-process-data/guitars-process-data';
 import { loadTotalGuitarsCount } from './site-process-data/site-process-data';
 
 export const fetchGuitars = createAsyncThunk(
@@ -64,6 +64,23 @@ export const addNewComment = createAsyncThunk(
       setIsSuccessReviewModalOpened(true);
     } catch(error) {
       setIsSaving(false);
+      handleError(error);
+    }
+  },
+);
+
+export const fetchSearchResultGuitars = createAsyncThunk(
+  'fetchSearchResultGuitars',
+  async (searchData: string) => {
+    if(!searchData) {
+      store.dispatch(loadSearchResult([]));
+      return;
+    }
+    try {
+      const {data} = await api.get(`/guitars?name_like=${searchData}`);
+      store.dispatch(loadSearchResult(data));
+    } catch (error) {
+      store.dispatch(loadSearchResult([]));
       handleError(error);
     }
   },
