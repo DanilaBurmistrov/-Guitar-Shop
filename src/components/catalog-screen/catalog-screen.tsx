@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { FormEvent, useCallback, useEffect, useRef } from 'react';
 import { fetchGuitars } from '../../store/api-action';
 import ProductList from '../product-list/product-list';
 import { useAppDispatch, useAppSelector} from '../../hooks';
@@ -8,7 +8,7 @@ import Pagination from '../pagination/pagination';
 import LoadingScreen from '../loading-screen/loading-screen';
 import Footer from '../footer/footer';
 import Header from '../header/header';
-import { GUITAR_STRING_COUNT, GUITAR_PER_PAGE } from '../../const';
+import { GUITAR_STRING_COUNT, GUITAR_PER_PAGE, TYPES_FOR_STRINGS } from '../../const';
 
 export default function CatalogScreen(): JSX.Element {
 
@@ -22,7 +22,7 @@ export default function CatalogScreen(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const { guitars } = useAppSelector(({ DATA }) => DATA);
   const { sortedGuitars } = useAppSelector(({ DATA }) => DATA);
-  const minRef = useRef<HTMLInputElement>(null);
+
   const maxRef = useRef<HTMLInputElement>(null);
 
   const currentSortType = searchParams.get('_sort') ? `&_sort=${searchParams.get('_sort')}` : '';
@@ -39,9 +39,20 @@ export default function CatalogScreen(): JSX.Element {
     if (searchParams.getAll('type').length) {
       return !searchParams
         .getAll('type')
-        .map((type) => GUITAR_STRING_COUNT?.[type])
+        .map((type) => GUITAR_STRING_COUNT?.[type as keyof typeof GUITAR_STRING_COUNT])
         .flat()
         .includes(strings);
+    }
+    return false;
+  };
+
+  const currentAvailableTypes = (types: string) => {
+    if (searchParams.getAll('stringCount').length) {
+      return !searchParams
+        .getAll('stringCount')
+        .map((stringCount) => TYPES_FOR_STRINGS?.[stringCount as keyof typeof TYPES_FOR_STRINGS])
+        .flat()
+        .includes(types);
     }
     return false;
   };
@@ -65,14 +76,69 @@ export default function CatalogScreen(): JSX.Element {
 
   const lastIndex = currentPage() * GUITAR_PER_PAGE;
   const firstIndex = lastIndex - GUITAR_PER_PAGE;
+  const filterParams = `${currentTypeFilter}${currentStringFilter}`;
+  const sortParams = `${currentSortType}${currentSortDirection}`;
 
   useEffect(() => {
-    const filterParams = `${currentTypeFilter}${currentStringFilter}`;
-    const sortParams = `${currentSortType}${currentSortDirection}`;
 
     dispatch(fetchGuitars([pageNumber, firstIndex, lastIndex, filterParams, sortParams, currentPriceFilter]));
-  }, [currentPriceFilter, currentSortDirection, currentSortType, currentStringFilter, currentTypeFilter, dispatch, firstIndex, lastIndex, pageNumber]);
+  }, [currentPriceFilter, dispatch, filterParams, firstIndex, lastIndex, pageNumber, sortParams]);
 
+  const handlePriceFilter = useCallback(
+    (evt: { currentTarget: HTMLInputElement }, filter = 'price_gte') => {
+      const input = evt.currentTarget;
+      const currentMin = Number(searchParams.get('price_gte'));
+
+      if (+input.value < 0) {
+        input.value = '0';
+      }
+      if (+input.value < sortedGuitars[0].price) {
+        input.value = `${sortedGuitars[0].price}`;
+      }
+      if (+input.value > sortedGuitars[sortedGuitars.length - 1].price) {
+        input.value = `${sortedGuitars[sortedGuitars.length - 1].price}`;
+      }
+      if (filter === 'price_lte' && +input.value < currentMin) {
+        input.value = `${currentMin}`;
+      }
+      searchParams.set(filter, input.value);
+
+      setSearchParams(searchParams);
+    },
+    [searchParams, setSearchParams, sortedGuitars]
+  );
+
+  const handleFilter = useCallback(
+    (evt: FormEvent) => {
+      const searchInput = evt.target as HTMLInputElement;
+      if (searchInput.type === 'number') {
+        return;
+      }
+      const inputs = Array.from(evt.currentTarget.querySelectorAll('input'));
+
+      const availableStringsCount = new Set(inputs.map((input) => (input.checked ? GUITAR_STRING_COUNT[input.id as keyof typeof GUITAR_STRING_COUNT] : null)).flat());
+
+      availableStringsCount.delete(null);
+
+      setSearchParams(
+        `${currentPriceFilter}${inputs
+          .map((input) => {
+            if (!input.checked) {
+              return '';
+            }
+            if (availableStringsCount.size === 0) {
+              return input.name;
+            }
+            if (availableStringsCount.has(parseInt(input.id, 10))) {
+              return input.name;
+            }
+            return input.name.includes(filterParams) ? input.name : '';
+          })
+          .join('&')}${sortStroke}`
+      );
+    },
+    [currentPriceFilter, setSearchParams, sortStroke]
+  );
 
   return (
     <>
@@ -90,34 +156,7 @@ export default function CatalogScreen(): JSX.Element {
           <div className="catalog">
             <form
               className='catalog-filter'
-              onChange={(evt) => {
-                const minFilter = minRef.current?.value ? `&price_gte=${Math.abs(Number(minRef.current.value))}` : '';
-                const maxFilter = maxRef.current?.value ? `&price_lte=${Math.abs(Number(maxRef.current.value))}` : '';
-
-                const availableStringsCount = new Set(
-                  Array.from(evt.currentTarget.querySelectorAll('input'))
-                    .map((input) => (input.checked ? GUITAR_STRING_COUNT[input.id] : null))
-                    .flat()
-                );
-                availableStringsCount.delete(null);
-                availableStringsCount.delete(null);
-                setSearchParams(
-                  `${sortStroke}${Array.from(evt.currentTarget.querySelectorAll('input'))
-                    .map((input) => {
-                      if (!input.checked) {
-                        return '';
-                      }
-                      if (availableStringsCount.size === 0) {
-                        return input.name;
-                      }
-                      if (availableStringsCount.has(parseInt(input.id, 10))) {
-                        return input.name;
-                      }
-                      return input.name.includes('type=') ? input.name : '';
-                    })
-                    .join('&')}${minFilter}${maxFilter}`
-                );
-              }}
+              onChange={handleFilter}
             >
               <h2 className="title title--bigger catalog-filter__title">Фильтр</h2>
               <fieldset className="catalog-filter__block">
@@ -126,22 +165,17 @@ export default function CatalogScreen(): JSX.Element {
                   <div className="form-input">
                     <label className="visually-hidden">Минимальная цена</label>
                     <input
-                      ref={minRef}
                       type='number'
                       placeholder={`${sortedGuitars[0] ? sortedGuitars[0].price : 0}`}
                       id='priceMin'
                       name='от'
                       min={sortedGuitars[0]?.price || 0}
                       max={sortedGuitars[sortedGuitars.length - 1]?.price || 0}
-                      onChange={(evt) => {
-                        if (Number(evt.target.value) < 0) {
-                          evt.target.value = String(0);
-                        }
-                        if (Number(evt.target.value) > sortedGuitars[sortedGuitars.length - 1]?.price) {
-                          evt.target.value = String(sortedGuitars[sortedGuitars.length - 1]?.price);
-                        }
-                        if (Number(evt.target.value) < sortedGuitars[0]?.price) {
-                          evt.target.value = String(sortedGuitars[0]?.price);
+                      defaultValue={searchParams ? `${searchParams?.get('price_gte')}` : ''}
+                      onBlur={handlePriceFilter}
+                      onKeyDown={(evt) => {
+                        if (evt.key === 'Enter') {
+                          handlePriceFilter(evt);
                         }
                       }}
                     />
@@ -155,15 +189,11 @@ export default function CatalogScreen(): JSX.Element {
                       id='priceMax'
                       name='до'
                       min={0}
-                      onChange={(evt) => {
-                        if (Number(evt.target.value) < 0) {
-                          evt.target.value = String(0);
-                        }
-                        if (Number(evt.target.value) < sortedGuitars[0]?.price) {
-                          evt.target.value = String(sortedGuitars[0]?.price);
-                        }
-                        if (Number(evt.target.value) > sortedGuitars[sortedGuitars.length - 1]?.price) {
-                          evt.target.value = String(sortedGuitars[sortedGuitars.length - 1]?.price);
+                      defaultValue={searchParams.get('price_lte') || ''}
+                      onBlur={(evt) => handlePriceFilter(evt, 'price_lte')}
+                      onKeyDown={(evt) => {
+                        if (evt.key === 'Enter') {
+                          handlePriceFilter(evt, 'price_lte');
                         }
                       }}
                     />
@@ -173,15 +203,15 @@ export default function CatalogScreen(): JSX.Element {
               <fieldset className='catalog-filter__block'>
                 <legend className='catalog-filter__block-title'>Тип гитар</legend>
                 <div className='form-checkbox catalog-filter__block-item'>
-                  <input className='visually-hidden' type='checkbox' id='acoustic' name='type=acoustic' defaultChecked={currentTypeFilter.includes('acoustic')} />
+                  <input className='visually-hidden' type='checkbox' id='acoustic' name='type=acoustic' defaultChecked={currentTypeFilter.includes('acoustic')} disabled={currentAvailableTypes('acoustic')} />
                   <label htmlFor='acoustic'>Акустические гитары</label>
                 </div>
                 <div className='form-checkbox catalog-filter__block-item'>
-                  <input className='visually-hidden' type='checkbox' id='electric' name='type=electric' defaultChecked={currentTypeFilter.includes('electric')} />
+                  <input className='visually-hidden' type='checkbox' id='electric' name='type=electric' defaultChecked={currentTypeFilter.includes('electric')} disabled={currentAvailableTypes('electric')}/>
                   <label htmlFor='electric'>Электрогитары</label>
                 </div>
                 <div className='form-checkbox catalog-filter__block-item'>
-                  <input className='visually-hidden' type='checkbox' id='ukulele' name='type=ukulele' defaultChecked={currentTypeFilter.includes('ukulele')} />
+                  <input className='visually-hidden' type='checkbox' id='ukulele' name='type=ukulele' defaultChecked={currentTypeFilter.includes('ukulele')} disabled={currentAvailableTypes('ukulele')}/>
                   <label htmlFor='ukulele'>Укулеле</label>
                 </div>
               </fieldset>

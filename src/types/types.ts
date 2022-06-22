@@ -45,4 +45,3 @@ export type NewComment = {
   setIsFormModalOpened: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export type GuitarStringCountType = {[property: string]: number[]};

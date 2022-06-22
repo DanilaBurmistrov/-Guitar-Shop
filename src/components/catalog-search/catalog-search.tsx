@@ -57,7 +57,7 @@ export default function CatalogSearch(): JSX.Element {
         <ul className={`form-search__select-list list-opened ${!searchResult.length && 'form-search__select-list--no-match'}`}>
           {searchResult.map((guitar) => (
             <Link className='form-search__select-item' key={guitar.id} to={`/product/${guitar.id}`} onClick={resetSearch}>
-              <li className='form-search__select-item' tabIndex={0}>
+              <li className='form-search__select-item' tabIndex={1}>
                 {guitar.name}
               </li>
             </Link>
