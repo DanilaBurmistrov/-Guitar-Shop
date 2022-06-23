@@ -55,7 +55,7 @@ export default function CatalogSearch(): JSX.Element {
         </label>
       </form>
       <ul className={`form-search__select-list ${(serchResultGuitars[0]) ? 'list-opened' : 'hidden'} `} onClick={(evt) => handleSelectListClick(evt)}>
-        {serchResultGuitars.map((serchedGuitar) => <li key={serchedGuitar.id} className="form-search__select-item" data-guitarid={serchedGuitar.id} tabIndex={1}>{serchedGuitar.name}</li>)}
+        {serchResultGuitars.map((serchedGuitar) => <li key={serchedGuitar.id} className="form-search__select-item" data-guitarid={serchedGuitar.id} tabIndex={0}>{serchedGuitar.name}</li>)}
       </ul>
       <button className='form-search__reset' type='reset' form='form-search' style={ {display: searchInputValue ? 'block' : 'none'}}>
         <svg className='form-search__icon' width={14} height={15} aria-hidden='true'>
