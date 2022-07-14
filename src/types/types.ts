@@ -45,3 +45,19 @@ export type NewComment = {
   setIsFormModalOpened: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+export type InitialGuitar = {
+  id: number
+  name: string
+  vendorCode: string
+  type: string
+  description: string
+  previewImg: string
+  stringCount: number
+  rating: number
+  price: number
+  comments: Comments
+  count: number
+}
+
+export type InitialGuitars = InitialGuitar[];
+

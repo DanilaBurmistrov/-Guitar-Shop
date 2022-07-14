@@ -41,19 +41,36 @@ export enum AppRoute {
   CatalogPage = '/catalog/page_:pageNumber',
   ProductPage = '/product/:id',
   ServerError= '/500',
+  Basket = '/basket'
 }
 
 export enum APIRoute {
   Guitars = '/guitars',
   Comments = '/comments',
+  Coupons = '/coupons',
 }
 
 export enum NameSpace {
   Data = 'DATA',
   Site = 'SITE',
+  Basket = 'BASKET',
 }
 
 export enum HttpCode {
   BAD_REQUEST = 400,
   NOT_FOUND = 404,
 }
+
+export const INITIAL_GUITAR = {
+  id: 0,
+  name: '',
+  vendorCode: '',
+  type: '',
+  description: '',
+  previewImg: '',
+  stringCount: 0,
+  rating: 0,
+  price: 0,
+  comments: [],
+  count: 0,
+};

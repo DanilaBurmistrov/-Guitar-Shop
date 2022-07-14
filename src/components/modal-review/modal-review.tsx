@@ -126,7 +126,6 @@ export default function ModalReview({setIsSuccessReviewModalOpened, setIsFormMod
     <div className="modal is-active modal--review modal-for-ui-kit">
       <div className="modal__wrapper">
         <div className="modal__overlay" data-close-modal ref={modalOverlayRef} >
-
         </div>
         <div className="modal__content">
           <h2 className="modal__header modal__header--review title title--medium">Оставить отзыв</h2>

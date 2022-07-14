@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { selectBasketGuitars } from '../../store/selectors';
 import CatalogSearch from '../catalog-search/catalog-search';
 
 export default function Header(): JSX.Element {
+
+  const guitars = useAppSelector(selectBasketGuitars);
+
+  const guitarsCount = guitars.reduce((acc, cur) => acc + cur.count, 0);
 
   return (
     <header className="header" id="header">
@@ -21,11 +27,12 @@ export default function Header(): JSX.Element {
           </ul>
         </nav>
         <CatalogSearch />
-        <a className="header__cart-link" href="/" aria-label="Корзина">
+        <Link className="header__cart-link" to={AppRoute.Basket} aria-label="Корзина">
           <svg className="header__cart-icon" width="14" height="14" aria-hidden="true">
             <use xlinkHref="#icon-basket"></use>
-          </svg><span className="visually-hidden">Перейти в корзину</span><span className="header__cart-count">2</span>
-        </a>
+          </svg><span className="visually-hidden">Перейти в корзину</span>
+          {guitars && <span className={`header__cart-count ${!guitars.length && 'visually-hidden'}`}>{guitarsCount}</span>}
+        </Link>
       </div>
     </header>
   );

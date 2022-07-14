@@ -4,8 +4,10 @@ import { APIRoute, TIMEOUT_SHOW_ERROR } from '../const';
 import { handleError } from '../services/handle-error';
 import { NewComment } from '../types/types';
 import { redirectToRoute } from './action';
+import { setDiscount } from './basket-process-data/basket-process-data';
 import { loadGuitars, loadOneGuitarCard, loadPostedComment, setError, loadSortedGuitars, loadSearchResult } from './guitars-process-data/guitars-process-data';
 import { loadTotalGuitarsCount } from './site-process-data/site-process-data';
+import { Dispatch, SetStateAction } from 'react';
 
 export const fetchGuitars = createAsyncThunk(
   'fetchGuitars',
@@ -82,6 +84,20 @@ export const fetchSearchResultGuitars = createAsyncThunk(
     } catch (error) {
       store.dispatch(loadSearchResult([]));
       handleError(error);
+    }
+  },
+);
+
+export const fetchCoupon = createAsyncThunk (
+  'fetchCoupon',
+  async ([coupon, onSuccess]: [string, Dispatch<SetStateAction<string | undefined>>?]) => {
+    try {
+      const {data} = await api.post(APIRoute.Coupons, {coupon});
+      store.dispatch(setDiscount(data));
+      onSuccess?.('success');
+    } catch (error) {
+      handleError(error);
+      onSuccess?.('dismiss');
     }
   },
 );

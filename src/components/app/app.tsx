@@ -5,6 +5,7 @@ import PageNotFound from '../page-not-found/page-not-found';
 import CatalogScreen from '../catalog-screen/catalog-screen';
 import ProductPage from '../product-page/product-page';
 import InternalServerError from '../internal-server-error/internal-server-error';
+import Basket from '../basket/basket';
 
 export default function App(): JSX.Element {
 
@@ -25,6 +26,10 @@ export default function App(): JSX.Element {
       <Route
         path={AppRoute.ServerError}
         element={<InternalServerError /> }
+      />
+      <Route
+        path={AppRoute.Basket}
+        element={<Basket/>}
       />
       <Route
         path="*"

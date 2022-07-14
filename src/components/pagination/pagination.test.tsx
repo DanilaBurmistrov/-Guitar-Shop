@@ -21,12 +21,12 @@ describe('component: Pagination', () => {
       </Router>,
     );
 
-    const pageLinkElement = screen.getByText(/2/i);
+    const pageLinkElement = screen.getByText(/2/);
     expect(pageLinkElement).toBeInTheDocument();
     const pagesButtons = screen.getAllByTestId('page');
 
     expect(pagesButtons[0]).toHaveClass('pagination__page--active');
-    expect(screen.queryByText(/Назад/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Назад/)).not.toBeInTheDocument();
 
   });
 
@@ -46,7 +46,7 @@ describe('component: Pagination', () => {
       </Router>,
     );
 
-    const pageLinkElement = screen.getByText(/3/i);
+    const pageLinkElement = screen.getByText(/3/);
     expect(pageLinkElement).toBeInTheDocument();
     const pagesButtons = screen.getAllByTestId('page');
 

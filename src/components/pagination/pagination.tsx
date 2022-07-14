@@ -31,7 +31,7 @@ export default function Pagination({totalGuitarsCount}: PaginationProps): JSX.El
 
         {
           Array.from({ length: pagesCount }, (v, k) => k).map((_, ind) => (
-            <li key={_} className={`pagination__page ${ind + 1 === Number(pageId) && 'pagination__page--active'}`}><Link to={`/catalog/page_${ind + 1}/?${queryParams.toString()}`} className="link pagination__page-link" >{ind + 1}</Link>
+            <li key={_} className={`pagination__page ${ind + 1 === Number(pageId) && 'pagination__page--active'}`} data-testid="page"><Link to={`/catalog/page_${ind + 1}/?${queryParams.toString()}`} className="link pagination__page-link" >{ind + 1}</Link>
             </li>
           ))
         }

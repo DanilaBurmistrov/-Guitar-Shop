@@ -27,3 +27,19 @@ export const makeFakeReview = (): Comment => ({
   createAt: '2022-05-22T21:48:13.678Z',
   guitarId: Math.floor(Math.random() * 100),
 } as Comment);
+
+export const makeFakeInitialGuitar = ({
+
+  id: Math.floor(Math.random() * 100),
+  name: name.title(),
+  vendorCode: 'AA666666',
+  type: 'ukulele',
+  description: random.words(),
+  previewImg: image.imageUrl(),
+  stringCount: Math.floor(Math.random() * 7),
+  rating: Math.floor(Math.random() * 5),
+  price: Math.floor(Math.random() * 10000),
+  comments: [makeFakeReview(), makeFakeReview()],
+  count: 1,
+
+});

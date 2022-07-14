@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { Guitar } from '../../types/types';
+import ModalAddSuccess from '../modal-add-success/modal-add-success';
+import ModallAdd from '../modal-add/modal-add';
 import StarRating from '../star-rating/star-rating';
 import Tabs from '../tabs/tabs';
 import { getGuitarImgForSrcSet } from '../utils/utils';
@@ -8,6 +11,16 @@ type ProductDetailedCardProps = {
 }
 
 export default function ProductDetailedCard({guitar}: ProductDetailedCardProps): JSX.Element {
+
+  const [isAddToBasketModalOpened, setIsAddToBasketModalOpened] = useState(false);
+  const [isModalAddSuccessOpened, setIsAModalAddSuccessOpened] = useState(false);
+
+  if(isAddToBasketModalOpened || isModalAddSuccessOpened) {
+    document.body.style.overflow = 'hidden';
+  }
+  else {
+    document.body.style.overflow = 'unset';
+  }
 
   return (
     <div className="product-container">
@@ -23,9 +36,10 @@ export default function ProductDetailedCard({guitar}: ProductDetailedCardProps):
       </div>
       <div className="product-container__price-wrapper">
         <p className="product-container__price-info product-container__price-info--title">Цена:</p>
-        <p className="product-container__price-info product-container__price-info--value">{guitar.price} ₽</p><a className="button button--red button--big product-container__button" href="/">Добавить в корзину</a>
+        <p className="product-container__price-info product-container__price-info--value">{guitar.price} ₽</p><button className="button button--red button--big product-container__button" onClick={() => setIsAddToBasketModalOpened(true)}>Добавить в корзину</button>
       </div>
+      {isAddToBasketModalOpened && <ModallAdd setIsAddToBasketModalOpened={setIsAddToBasketModalOpened} guitar={guitar} setIsAModalAddSuccessOpened={setIsAModalAddSuccessOpened}/>}
+      {isModalAddSuccessOpened && <ModalAddSuccess setIsAModalAddSuccessOpened={setIsAModalAddSuccessOpened}/>}
     </div>
-
   );
 }

@@ -4,9 +4,10 @@ import { State } from '../types/state';
 import thunk, {ThunkDispatch} from 'redux-thunk';
 import MockAdapter from 'axios-mock-adapter';
 import { createAPI } from '../services/api';
-import { fetchGuitars, fetchOneGuitarCard, addNewComment } from './api-action';
+import { fetchGuitars, fetchOneGuitarCard, addNewComment, fetchCoupon } from './api-action';
 import { makeFakeGuitar } from '../components/utils/test-mocks';
 import { APIRoute } from '../const';
+import { setDiscount } from './basket-process-data/basket-process-data';
 
 describe('Async actions', () => {
   const api = createAPI();
@@ -117,4 +118,18 @@ describe('Async actions', () => {
     expect(actions).toEqual(expectedActions);
 
   });
+
+  it('should dispatch setDiscount when POST /coupons', async () => {
+    const couponRespone = 15;
+    const coupon = 'light-333';
+    mockAPI.onPost(APIRoute.Coupons).reply(200, couponRespone);
+
+    const mockStore = fakeStore();
+    await mockStore.dispatch(fetchCoupon([coupon]));
+
+    const actions = mockStore.getActions().map(({ type }) => type);
+
+    expect(actions).toContain(`${setDiscount.toString()}/fulfilled`);
+  });
+
 });

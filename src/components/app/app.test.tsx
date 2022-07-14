@@ -5,13 +5,16 @@ import {Provider} from 'react-redux';
 import {configureMockStore} from '@jedmao/redux-mock-store';
 import {Router} from 'react-router-dom';
 import { makeFakeGuitar } from '../utils/test-mocks';
+import { getDefaultMiddleware } from '@reduxjs/toolkit';
 
 
 describe('Application Routing', () => {
 
-  it('should render MainScreen when navigate to "/"', () => {
+  it('should render mainScreen catalog when navigate to "/"', () => {
 
-    const mockStore = configureMockStore();
+    const mockStore = configureMockStore([...getDefaultMiddleware()]);
+
+    const mockSearchResult = [makeFakeGuitar()];
 
     const store = mockStore({
       DATA: {
@@ -19,8 +22,11 @@ describe('Application Routing', () => {
         isGuitarsDataLoaded: true,
         oneGuitarCard: null,
         isOneGuitarCardDataLoaded: true,
+        searchResultGuitars: mockSearchResult,
       },
-      SITE: {totalGuitarsCount: 0},
+      SITE: {
+        totalGuitarsCount: 0,
+      },
     });
 
     const history = createMemoryHistory();
@@ -37,8 +43,41 @@ describe('Application Routing', () => {
     expect(screen.getByText(/О нас/i)).toBeInTheDocument();
 
   });
-  it('should render ProductPage when navigate to "/product/1"', () => {
-    const mockStore = configureMockStore();
+  it('should render catalog page when navigate to "/catalog/page_1"', () => {
+    const mockStore = configureMockStore([...getDefaultMiddleware()]);
+
+    const mockSearchResult = [makeFakeGuitar()];
+
+    const store = mockStore({
+      DATA: {
+        guitars: [makeFakeGuitar(), makeFakeGuitar()],
+        isGuitarsDataLoaded: true,
+        oneGuitarCard: null,
+        isOneGuitarCardDataLoaded: false,
+        searchResultGuitars: mockSearchResult,
+      },
+      SITE: {
+        totalGuitarsCount: 2,
+      },
+    });
+
+    const history = createMemoryHistory();
+    history.push('/catalog/page_1');
+    render(
+      <Provider store={store}>
+        <Router location={history.location} navigator={history}>
+          <App />
+        </Router>
+      </Provider>,
+    );
+    expect(screen.getByText(/Каталог гитар/i)).toBeInTheDocument();
+    expect(screen.getByText(/Главная/i)).toBeInTheDocument();
+
+  });
+  it('should render product page when navigate to "/product/1"', () => {
+    const mockStore = configureMockStore([...getDefaultMiddleware()]);
+
+    const mockSearchResult = [makeFakeGuitar()];
 
     const store = mockStore({
       DATA: {
@@ -46,8 +85,11 @@ describe('Application Routing', () => {
         isGuitarsDataLoaded: false,
         oneGuitarCard: makeFakeGuitar(),
         isOneGuitarCardDataLoaded: true,
+        searchResultGuitars: mockSearchResult,
       },
-      SITE: {totalGuitarsCount: 0},
+      SITE: {
+        totalGuitarsCount: 0,
+      },
     });
 
     const history = createMemoryHistory();
@@ -64,8 +106,8 @@ describe('Application Routing', () => {
     expect(screen.getByText(/Наверх/i)).toBeInTheDocument();
 
   });
-  it('should render PageNotFound when navigate to non-existent-route', () => {
-    const mockStore = configureMockStore();
+  it('should render NotFound page when navigate to non-existent-route', () => {
+    const mockStore = configureMockStore([...getDefaultMiddleware()]);
 
     const store = mockStore({
       DATA: {

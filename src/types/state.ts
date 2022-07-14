@@ -1,5 +1,5 @@
 import { store } from '../store';
-import { Guitar, Guitars } from './types';
+import { Guitar, Guitars, InitialGuitar, InitialGuitars } from './types';
 
 export type GuitarsProcess = {
   guitars: Guitars
@@ -18,3 +18,10 @@ export type SiteProcess = {
 export type State = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
+
+export type BasketProcess = {
+  guitars: InitialGuitars,
+  guitarToAdd: InitialGuitar,
+  guitarToDelete: InitialGuitar,
+  discount: number,
+};
