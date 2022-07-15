@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useRef } from 'react';
 import { useAppDispatch } from '../../hooks';
 import ModalDelete from '../modal-delete/modal-delete';
 import { raiseGuitarQuantity, reduceGuitarQuantity, setGuitarQuantity } from '../../store/basket-process-data/basket-process-data';
@@ -17,21 +17,18 @@ export default function BasketItem({guitar} : BasketItemProps): JSX.Element {
 
   const dispatch = useAppDispatch();
 
-  const [number, setNumber] = useState(count);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleNumberChange = (evt: ChangeEvent<HTMLInputElement>) => {
     if (+evt.target.value < 1) {
-      setNumber(1);
-
+      evt.target.value = '1';
+      dispatch(setGuitarQuantity({ id, count: 1 }));
       return;
     }
 
     if (+evt.target.value > 99) {
-      setNumber(99);
-
       return;
     }
-    setNumber(Number(evt.target.value));
     dispatch(setGuitarQuantity({ id, count: +evt.target.value }));
   };
 
@@ -60,9 +57,14 @@ export default function BasketItem({guitar} : BasketItemProps): JSX.Element {
           className='quantity__button'
           aria-label='Уменьшить количество'
           data-testid='minus-btn'
-          disabled={number === 1}
           onClick={() => {
-            setNumber((prev) => prev - 1);
+            if (Number(inputRef.current?.value) === 1) {
+              dispatch(reduceGuitarQuantity(guitar));
+              return;
+            }
+            if (inputRef.current?.value) {
+              inputRef.current.value = `${count - 1}`;
+            }
             dispatch(reduceGuitarQuantity(guitar));
           }}
         >
@@ -73,22 +75,24 @@ export default function BasketItem({guitar} : BasketItemProps): JSX.Element {
         <input
           className='quantity__input'
           type='number'
-          placeholder={String(number)}
+          placeholder={String(count)}
           id='2-count'
           name='2-count'
           max={99}
-          value={number}
-          onBlur={handleNumberChange}
-          onChange={handleNumberChange}
+          ref={inputRef}
+          defaultValue={count}
           data-testid='counter'
+          onBlur={handleNumberChange}
         />
         <button
-          data-testid='plus-btn'
           className='quantity__button'
+          data-testid='plus-btn'
           aria-label='Увеличить количество'
-          disabled={number === 99}
+          disabled={Number(inputRef.current?.value) === 99}
           onClick={() => {
-            setNumber((prev) => prev + 1);
+            if (inputRef.current?.value) {
+              inputRef.current.value = `${count + 1}`;
+            }
             dispatch(raiseGuitarQuantity(id));
           }}
         >

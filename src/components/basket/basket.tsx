@@ -59,7 +59,7 @@ export default function Basket(): JSX.Element {
               </div>
               <div className="cart__total-info">
                 <p className="cart__total-item"><span className="cart__total-value-name">Всего:</span><span className="cart__total-value">{subtotal} ₽</span></p>
-                <p className="cart__total-item"><span className="cart__total-value-name">Скидка:</span><span className={`cart__total-value ${discount && 'cart__total-value--bonus '}`}>{discount > 0 ? '-' : ''} {discount} ₽</span></p>
+                <p className="cart__total-item"><span className="cart__total-value-name">Скидка:</span><span className={`cart__total-value ${discount && 'cart__total-value--bonus '}`}>{discount > 0 ? '-' : ''} {Math.ceil(discount)} ₽</span></p>
                 <p className="cart__total-item"><span className="cart__total-value-name">К оплате:</span><span className="cart__total-value cart__total-value--payment">{total} ₽</span></p>
                 <button className="button button--red button--big cart__order-button">Оформить заказ</button>
               </div>
