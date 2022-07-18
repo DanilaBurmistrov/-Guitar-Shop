@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useAppDispatch } from '../../hooks';
 import ModalDelete from '../modal-delete/modal-delete';
 import { raiseGuitarQuantity, reduceGuitarQuantity, setGuitarQuantity } from '../../store/basket-process-data/basket-process-data';
@@ -19,17 +19,20 @@ export default function BasketItem({guitar} : BasketItemProps): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleNumberChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    if (+evt.target.value < 1) {
-      evt.target.value = '1';
+  const handleNumberChange =  (evt: { currentTarget: HTMLInputElement }) => {
+    const input = evt.currentTarget;
+    if (+input.value < 1) {
+      input.value = '1';
       dispatch(setGuitarQuantity({ id, count: 1 }));
       return;
     }
 
-    if (+evt.target.value > 99) {
+    if (+input.value > 99) {
+      input.value = '99';
+      dispatch(setGuitarQuantity({ id, count: 99 }));
       return;
     }
-    dispatch(setGuitarQuantity({ id, count: +evt.target.value }));
+    dispatch(setGuitarQuantity({ id, count: +input.value }));
   };
 
   if(isDeleteModalOpened) {
@@ -83,6 +86,11 @@ export default function BasketItem({guitar} : BasketItemProps): JSX.Element {
           defaultValue={count}
           data-testid='counter'
           onBlur={handleNumberChange}
+          onKeyDown={(evt) => {
+            if (evt.key === 'Enter') {
+              handleNumberChange(evt);
+            }
+          }}
         />
         <button
           className='quantity__button'
